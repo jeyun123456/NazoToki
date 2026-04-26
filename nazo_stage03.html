@@ -1,0 +1,487 @@
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font-sans); }
+  .wrap { padding: 1.5rem 1rem; max-width: 680px; }
+
+  .header {
+    text-align: center;
+    border: 1px solid var(--color-border-secondary);
+    border-radius: var(--border-radius-lg);
+    padding: 1.2rem 1rem;
+    margin-bottom: 1.5rem;
+    background: var(--color-background-secondary);
+  }
+  .stage-label {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    margin-bottom: 0.3rem;
+  }
+  .header h1 { font-size: 18px; font-weight: 500; color: var(--color-text-primary); }
+  .header p { font-size: 13px; color: var(--color-text-secondary); margin-top: 0.5rem; line-height: 1.6; }
+
+  .clue-card {
+    border: 0.5px solid var(--color-border-tertiary);
+    border-radius: var(--border-radius-lg);
+    padding: 1.2rem 1.25rem;
+    margin-bottom: 1rem;
+    background: var(--color-background-primary);
+    transition: border-color 0.2s;
+  }
+  .clue-card.solved { border-color: #1D9E75; }
+
+  .clue-header {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 1rem;
+  }
+  .clue-num {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--color-background-secondary);
+    border: 0.5px solid var(--color-border-secondary);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 500; color: var(--color-text-secondary);
+    flex-shrink: 0;
+  }
+  .clue-num.solved { background: #1D9E75; color: white; border-color: #1D9E75; }
+  .clue-title { font-size: 15px; font-weight: 500; color: var(--color-text-primary); }
+  .clue-sub { font-size: 12px; color: var(--color-text-secondary); margin-top: 1px; }
+
+  .q-block { margin-bottom: 1rem; }
+  .q-text {
+    font-size: 13px; color: var(--color-text-secondary);
+    line-height: 1.6; margin-bottom: 0.6rem;
+  }
+  .q-text .jp { color: var(--color-text-tertiary); }
+
+  .answer-row {
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  }
+  .prefix {
+    font-size: 14px; color: var(--color-text-secondary);
+    white-space: nowrap;
+  }
+  .ans-input {
+    flex: 1; min-width: 120px;
+    padding: 0.35rem 0.75rem;
+    font-size: 14px;
+    border: 0.5px solid var(--color-border-secondary);
+    border-radius: var(--border-radius-md);
+    background: var(--color-background-secondary);
+    color: var(--color-text-primary);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .ans-input:focus { border-color: var(--color-border-primary); }
+  .ans-input.correct { border-color: #1D9E75 !important; background: #E1F5EE; color: #085041; }
+  .ans-input.wrong { border-color: #D85A30; }
+
+  .hint-box {
+    margin-top: 0.75rem;
+    padding: 0.7rem 0.9rem;
+    background: var(--color-background-secondary);
+    border-left: 3px solid var(--color-border-secondary);
+    border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0;
+    font-size: 13px; color: var(--color-text-secondary); line-height: 1.6;
+  }
+  .hint-box .jp { color: var(--color-text-tertiary); font-size: 12px; }
+
+  .divider {
+    border: none; border-top: 0.5px solid var(--color-border-tertiary);
+    margin: 1rem 0;
+  }
+
+  .final-card {
+    border: 0.5px solid var(--color-border-tertiary);
+    border-radius: var(--border-radius-lg);
+    padding: 1.2rem 1.25rem;
+    background: var(--color-background-primary);
+    margin-bottom: 1.5rem;
+    transition: border-color 0.2s;
+  }
+  .final-card.unlocked { border-color: #7F77DD; }
+
+  .final-header {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 1rem;
+  }
+  .lock-icon {
+    width: 28px; height: 28px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    background: var(--color-background-secondary);
+    border: 0.5px solid var(--color-border-secondary);
+    transition: background 0.3s;
+  }
+  .lock-icon.unlocked { background: #AFA9EC; border-color: #7F77DD; }
+
+  .summary-row {
+    display: flex; align-items: baseline; gap: 8px;
+    font-size: 13px; margin-bottom: 0.5rem; flex-wrap: wrap;
+  }
+  .sum-label { color: var(--color-text-secondary); white-space: nowrap; }
+  .sum-val {
+    font-weight: 500; color: var(--color-text-primary);
+    min-width: 80px;
+  }
+  .sum-val.empty { color: var(--color-text-tertiary); font-weight: 400; }
+
+  .logic-box {
+    margin: 1rem 0;
+    padding: 0.8rem 1rem;
+    background: var(--color-background-secondary);
+    border-radius: var(--border-radius-md);
+    font-size: 13px; color: var(--color-text-secondary); line-height: 1.8;
+  }
+  .logic-box .en { color: var(--color-text-primary); font-weight: 500; }
+
+  .final-answer-row { margin-top: 1rem; }
+  .blank-display {
+    display: flex; gap: 6px; margin-top: 0.5rem; flex-wrap: wrap;
+  }
+  .blank-cell {
+    width: 36px; height: 40px;
+    border-bottom: 2px solid var(--color-border-secondary);
+    display: flex; align-items: flex-end; justify-content: center;
+    font-size: 18px; font-weight: 500;
+    color: var(--color-text-primary);
+    padding-bottom: 4px;
+    transition: border-color 0.3s, color 0.3s;
+  }
+  .blank-cell.filled { border-color: #7F77DD; color: #534AB7; }
+
+  .reveal-btn {
+    margin-top: 1rem;
+    padding: 0.55rem 1.5rem;
+    font-size: 14px;
+    border: 0.5px solid var(--color-border-secondary);
+    border-radius: var(--border-radius-md);
+    background: transparent;
+    color: var(--color-text-secondary);
+    cursor: not-allowed;
+    transition: all 0.2s;
+  }
+  .reveal-btn.active {
+    background: #534AB7; color: white; border-color: #534AB7; cursor: pointer;
+  }
+  .reveal-btn.active:hover { background: #3C3489; }
+
+  .result-box {
+    display: none;
+    margin-top: 1rem;
+    padding: 1rem 1.2rem;
+    background: #EEEDFE;
+    border: 0.5px solid #AFA9EC;
+    border-radius: var(--border-radius-lg);
+    font-size: 14px; color: #3C3489; line-height: 1.7; text-align: center;
+  }
+  .result-box.show { display: block; }
+  .result-box strong { font-size: 20px; display: block; margin-bottom: 0.3rem; }
+</style>
+
+<div class="wrap">
+
+  <div class="header">
+    <div class="stage-label">Mystery 03</div>
+    <h1>Campus Promenade</h1>
+    <p>このプロムナードは一本道。端から端まで歩いて、手がかりを集めよ！<br>
+    Walk from end to end and collect your clues!</p>
+  </div>
+
+  <!-- CLUE 1 -->
+  <div class="clue-card" id="card1">
+    <div class="clue-header">
+      <div class="clue-num" id="num1">1</div>
+      <div>
+        <div class="clue-title">Clue 1 — Find the sign</div>
+        <div class="clue-sub">看板を探せ</div>
+      </div>
+    </div>
+    <div class="q-block">
+      <div class="q-text">
+        <span class="jp">看板に書かれた「主役の木」の英語名は？</span><br>
+        What is the English name of the "star tree" of this promenade?
+      </div>
+      <div class="answer-row">
+        <div class="ans-input" id="c1input" contenteditable="true" spellcheck="false"
+          style="flex:1; min-height:36px; display:flex; align-items:center; cursor:text;"
+          data-placeholder="answer...">
+        </div>
+        <span class="prefix">tree</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- CLUE 2 -->
+  <div class="clue-card" id="card2">
+    <div class="clue-header">
+      <div class="clue-num" id="num2">2</div>
+      <div>
+        <div class="clue-title">Clue 2 — Use the QR code</div>
+        <div class="clue-sub">QRコードを使え</div>
+      </div>
+    </div>
+    <div class="q-block">
+      <div class="q-text">
+        <span class="jp">写真の場所へ行き、植物プレートのQRコードをスキャンせよ！</span><br>
+        Go to the location and scan the QR code on the plant nameplate.
+      </div>
+      <div class="q-text" style="margin-top:0.5rem;">
+        <span class="jp">この花は何色か？英語で答えよ。</span><br>
+        What color is this flower? Answer in English.
+      </div>
+      <div class="answer-row">
+        <input class="ans-input" id="c2color" type="text" placeholder="color(s)..." autocomplete="off">
+      </div>
+    </div>
+    <hr class="divider">
+    <div class="q-block" id="c2hint-block" style="display:none;">
+      <div class="hint-box">
+        <span class="jp">その色は、空に現れるあるものの「両端の色」だ。</span><br>
+        These colors are at both ends of something that appears in the sky.<br>
+        <span class="jp">それは何か？</span> What is it?
+      </div>
+      <div class="answer-row" style="margin-top:0.6rem;">
+        <input class="ans-input" id="c2rainbow" type="text" placeholder="answer..." autocomplete="off">
+      </div>
+    </div>
+  </div>
+
+  <!-- CLUE 3 -->
+  <div class="clue-card" id="card3">
+    <div class="clue-header">
+      <div class="clue-num" id="num3">3</div>
+      <div>
+        <div class="clue-title">Clue 3 — Find this place</div>
+        <div class="clue-sub">写真の場所を探せ</div>
+      </div>
+    </div>
+    <div class="q-block">
+      <div class="q-text">
+        <span class="jp">写真の木を探し、周りにある「夜に光るもの」を全部数えよ。</span><br>
+        Find the tree and count all the lights around it!<br>
+        <span class="jp" style="font-size:11px;">チーム全員で一緒に数えること！</span>
+        Count together as a team!
+      </div>
+      <div class="answer-row">
+        <input class="ans-input" id="c3lights" type="number" placeholder="number" min="0" max="99"
+          style="max-width:100px;">
+        <span class="prefix">lights</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- FINAL -->
+  <div class="final-card" id="finalCard">
+    <div class="final-header">
+      <div class="lock-icon" id="lockIcon">🔒</div>
+      <div>
+        <div class="clue-title">Final Mystery</div>
+        <div class="clue-sub" style="font-size:11px; color:var(--color-text-tertiary);">
+          3つの答えが揃ったら解錠 — Unlocks when all 3 clues are filled
+        </div>
+      </div>
+    </div>
+
+    <div class="summary-row">
+      <span class="sum-label">Clue 1:</span>
+      <span class="sum-val" id="sum1">___ tree</span>
+    </div>
+    <div class="summary-row">
+      <span class="sum-label">Clue 2:</span>
+      <span class="sum-val" id="sum2">___</span>
+    </div>
+    <div class="summary-row">
+      <span class="sum-label">Clue 3:</span>
+      <span class="sum-val" id="sum3">___ lights</span>
+    </div>
+
+    <div class="logic-box" id="logicBox" style="opacity:0.4;">
+      <span class="jp">CLUE 2で見つけたものを作り出すのは何か？</span><br>
+      What creates the thing you found in Clue 2?<br><br>
+      <span class="jp">CLUE 1の木の名前と、その答えの最初の5文字を比べよ。</span><br>
+      Compare the tree name with the first 5 letters of your answer.<br><br>
+      <span class="en">RAINBOW + ? → What splits light into 7 colors?</span><br>
+      <span style="font-size:12px; color:var(--color-text-tertiary);">_ _ _ _ _</span>
+    </div>
+
+    <div class="final-answer-row" id="finalSection" style="opacity:0.4;">
+      <div class="q-text">
+        <span class="jp">何が光を7色に分けているのか？英語で答えよ。</span><br>
+        What splits light into 7 colors?
+      </div>
+      <div class="blank-display" id="blanks">
+        <div class="blank-cell" id="b0"></div>
+        <div class="blank-cell" id="b1"></div>
+        <div class="blank-cell" id="b2"></div>
+        <div class="blank-cell" id="b3"></div>
+        <div class="blank-cell" id="b4"></div>
+      </div>
+      <input class="ans-input" id="finalInput" type="text" maxlength="10"
+        placeholder="5-letter answer..." autocomplete="off"
+        style="margin-top:0.75rem; max-width:200px;" disabled>
+      <div style="margin-top:0.75rem;">
+        <button class="reveal-btn" id="revealBtn" disabled>Check answer</button>
+      </div>
+    </div>
+
+    <div class="result-box" id="resultBox">
+      <strong>その名を持つ建物へ向かえ！</strong>
+      Head to the building with that name!
+    </div>
+  </div>
+
+</div>
+
+<script>
+const FINAL_ANSWER = "PRISM";
+
+function norm(s){ return s.trim().toUpperCase(); }
+
+function updateC1(){
+  const v = document.getElementById('c1input').innerText.trim();
+  const s1 = document.getElementById('sum1');
+  const n1 = document.getElementById('num1');
+  const c1 = document.getElementById('card1');
+  if(v){
+    s1.textContent = v + ' tree';
+    s1.classList.remove('empty');
+    n1.classList.add('solved');
+    c1.classList.add('solved');
+  } else {
+    s1.textContent = '___ tree'; s1.classList.add('empty');
+    n1.classList.remove('solved'); c1.classList.remove('solved');
+  }
+  checkFinal();
+}
+
+function updateC2color(){
+  const v = document.getElementById('c2color').value.trim();
+  const hint = document.getElementById('c2hint-block');
+  if(v.length >= 2){
+    hint.style.display = 'block';
+  }
+  checkFinal();
+}
+
+function updateC2rainbow(){
+  const v = document.getElementById('c2rainbow').value.trim();
+  const s2 = document.getElementById('sum2');
+  const n2 = document.getElementById('num2');
+  const c2 = document.getElementById('card2');
+  if(v){
+    s2.textContent = v; s2.classList.remove('empty');
+    n2.classList.add('solved'); c2.classList.add('solved');
+  } else {
+    s2.textContent = '___'; s2.classList.add('empty');
+    n2.classList.remove('solved'); c2.classList.remove('solved');
+  }
+  checkFinal();
+}
+
+function updateC3(){
+  const v = document.getElementById('c3lights').value.trim();
+  const s3 = document.getElementById('sum3');
+  const n3 = document.getElementById('num3');
+  const c3 = document.getElementById('card3');
+  if(v !== ''){
+    s3.textContent = v + ' lights'; s3.classList.remove('empty');
+    n3.classList.add('solved'); c3.classList.add('solved');
+  } else {
+    s3.textContent = '___ lights'; s3.classList.add('empty');
+    n3.classList.remove('solved'); c3.classList.remove('solved');
+  }
+  checkFinal();
+}
+
+function checkFinal(){
+  const c1 = document.getElementById('c1input').innerText.trim();
+  const c2 = document.getElementById('c2rainbow').value.trim();
+  const c3 = document.getElementById('c3lights').value.trim();
+  const allFilled = c1 && c2 && c3 !== '';
+
+  const logicBox = document.getElementById('logicBox');
+  const finalSection = document.getElementById('finalSection');
+  const finalInput = document.getElementById('finalInput');
+  const revealBtn = document.getElementById('revealBtn');
+  const lockIcon = document.getElementById('lockIcon');
+  const finalCard = document.getElementById('finalCard');
+
+  if(allFilled){
+    logicBox.style.opacity = '1';
+    finalSection.style.opacity = '1';
+    finalInput.disabled = false;
+    lockIcon.textContent = '🔓';
+    lockIcon.classList.add('unlocked');
+    finalCard.classList.add('unlocked');
+  } else {
+    logicBox.style.opacity = '0.4';
+    finalSection.style.opacity = '0.4';
+    finalInput.disabled = true;
+    lockIcon.textContent = '🔒';
+    lockIcon.classList.remove('unlocked');
+    finalCard.classList.remove('unlocked');
+    revealBtn.disabled = true;
+    revealBtn.classList.remove('active');
+  }
+}
+
+function updateBlanks(){
+  const v = document.getElementById('finalInput').value.toUpperCase();
+  const revealBtn = document.getElementById('revealBtn');
+  for(let i=0;i<5;i++){
+    const cell = document.getElementById('b'+i);
+    if(v[i]){
+      cell.textContent = v[i];
+      cell.classList.add('filled');
+    } else {
+      cell.textContent = '';
+      cell.classList.remove('filled');
+    }
+  }
+  if(v.length === 5){
+    revealBtn.disabled = false;
+    revealBtn.classList.add('active');
+  } else {
+    revealBtn.disabled = true;
+    revealBtn.classList.remove('active');
+  }
+}
+
+function checkFinalAnswer(){
+  const v = norm(document.getElementById('finalInput').value);
+  const resultBox = document.getElementById('resultBox');
+  if(v === FINAL_ANSWER){
+    resultBox.classList.add('show');
+    resultBox.innerHTML = '<strong>正解！/ Correct!</strong>その名を持つ建物へ向かえ！<br>Head to the building with that name!';
+    resultBox.style.background = '#E1F5EE';
+    resultBox.style.borderColor = '#5DCAA5';
+    resultBox.style.color = '#085041';
+  } else {
+    resultBox.classList.add('show');
+    resultBox.innerHTML = '<strong>違う… / Not quite.</strong>もう一度考えてみよう。 Try again!';
+    resultBox.style.background = '#FAECE7';
+    resultBox.style.borderColor = '#F09975';
+    resultBox.style.color = '#712B13';
+  }
+}
+
+document.getElementById('c1input').addEventListener('input', updateC1);
+document.getElementById('c2color').addEventListener('input', updateC2color);
+document.getElementById('c2rainbow').addEventListener('input', updateC2rainbow);
+document.getElementById('c3lights').addEventListener('input', updateC3);
+document.getElementById('finalInput').addEventListener('input', updateBlanks);
+document.getElementById('revealBtn').addEventListener('click', checkFinalAnswer);
+
+document.getElementById('c1input').style.cssText += `
+  border: 0.5px solid var(--color-border-secondary);
+  border-radius: var(--border-radius-md);
+  padding: 0.35rem 0.75rem;
+  min-height: 36px;
+  background: var(--color-background-secondary);
+`;
+document.getElementById('c1input').addEventListener('focus', function(){
+  if(this.innerHTML === '' && this.dataset.placeholder){
+    this.style.color = 'var(--color-text-tertiary)';
+  }
+});
+</script>
