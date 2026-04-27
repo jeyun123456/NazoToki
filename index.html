@@ -4,597 +4,426 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MYSTERY 03 — Campus Promenade</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=IM+Fell+English:ital@0;1&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Share+Tech+Mono&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  :root {
-    --bg: #0e0d0b;
-    --bg2: #141310;
-    --bg3: #1c1a16;
-    --paper: #f5f0e8;
-    --paper2: #ede8dc;
-    --ink: #1a1710;
-    --gold: #c9a84c;
-    --gold2: #e8c96a;
-    --red: #8b2e2e;
-    --green: #2d5a3d;
-    --border: rgba(201,168,76,0.25);
-    --border2: rgba(201,168,76,0.5);
-    --mono: 'Share Tech Mono', monospace;
-    --serif: 'IM Fell English', serif;
-    --stamp: 'Special Elite', cursive;
-  }
+:root {
+  --bg:      #0d0c0a;
+  --card:    #2a2720;   /* ← 훨씬 밝은 카드 배경 */
+  --card2:   #322e25;   /* ← hint box 등 내부 */
+  --white:   #ffffff;
+  --off:     rgba(255,255,255,0.75);  /* 보조 텍스트도 충분히 밝게 */
+  --gold:    #d4aa50;
+  --gold2:   #f0cf78;
+  --green:   #4fc878;
+  --red:     #e05555;
+  --border:  rgba(212,170,80,0.28);
+  --border2: rgba(212,170,80,0.6);
+  --mono:    'Share Tech Mono', 'Courier New', monospace;
+  --serif:   'IM Fell English', Georgia, serif;
+  --stamp:   'Special Elite', 'Courier New', monospace;
+}
 
-  html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--white);
+  font-family: var(--serif);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
 
-  body {
-    background: var(--bg);
-    color: var(--paper);
-    font-family: var(--serif);
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
+body::after {
+  content: '';
+  position: fixed; inset: 0; z-index: 0;
+  background: radial-gradient(ellipse at 50% 10%, transparent 50%, rgba(0,0,0,0.5) 100%);
+  pointer-events: none;
+}
 
-  /* ── NOISE TEXTURE OVERLAY ── */
-  body::before {
-    content: '';
-    position: fixed; inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-    pointer-events: none; z-index: 0; opacity: 0.6;
-  }
+.page {
+  position: relative; z-index: 1;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem 6rem;
+}
 
-  /* ── VIGNETTE ── */
-  body::after {
-    content: '';
-    position: fixed; inset: 0;
-    background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.7) 100%);
-    pointer-events: none; z-index: 0;
-  }
+/* ── HEADER ── */
+.hdr { text-align: center; margin-bottom: 3rem; animation: fadeDown .8s ease both; }
 
-  .page {
-    position: relative; z-index: 1;
-    max-width: 760px;
-    margin: 0 auto;
-    padding: 3rem 1.5rem 5rem;
-  }
+.hdr-band { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.2rem; }
+.hdr-band::before, .hdr-band::after {
+  content: ''; flex: 1; height: 1px;
+  background: linear-gradient(to right, transparent, var(--gold), transparent);
+}
+.hdr-tag {
+  font-family: var(--mono); font-size: 10px; letter-spacing: .22em;
+  color: var(--gold); border: 1px solid var(--border2);
+  padding: 4px 14px; background: rgba(212,170,80,.08); white-space: nowrap;
+}
+.hdr h1 {
+  font-family: var(--stamp);
+  font-size: clamp(2rem, 6vw, 3.4rem);
+  letter-spacing: .06em; color: var(--white); line-height: 1.15;
+  text-shadow: 0 0 60px rgba(212,170,80,.3);
+}
+.hdr-desc {
+  margin-top: .9rem; font-family: var(--serif); font-style: italic;
+  font-size: 1rem; color: var(--off); line-height: 1.85;
+}
+.hdr-desc .en { color: var(--white); font-style: normal; }
 
-  /* ── HEADER ── */
-  .header {
-    text-align: center;
-    margin-bottom: 3rem;
-    animation: fadeDown 0.8s ease both;
-  }
+/* ── CLUE CARD ── */
+.clue { position: relative; margin-bottom: 1.8rem; animation: fadeUp .7s ease both; }
+.clue:nth-child(2) { animation-delay: .1s; }
+.clue:nth-child(3) { animation-delay: .2s; }
+.clue:nth-child(4) { animation-delay: .3s; }
 
-  .header-rule {
-    display: flex; align-items: center; gap: 1rem;
-    margin-bottom: 1rem;
-  }
-  .header-rule::before, .header-rule::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: linear-gradient(to right, transparent, var(--gold), transparent);
-  }
-  .mystery-num {
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.25em;
-    color: var(--gold);
-    text-transform: uppercase;
-    padding: 4px 12px;
-    border: 1px solid var(--border2);
-    background: rgba(201,168,76,0.05);
-  }
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  padding: 1.8rem 2rem;
+  position: relative; transition: border-color .4s, background .4s;
+}
+/* corner brackets */
+.card::before, .card::after {
+  content: ''; position: absolute; width: 14px; height: 14px;
+  border-style: solid; border-color: var(--gold);
+}
+.card::before { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
+.card::after  { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
 
-  .header h1 {
-    font-family: var(--stamp);
-    font-size: clamp(2rem, 5vw, 3.2rem);
-    letter-spacing: 0.05em;
-    color: var(--paper);
-    text-shadow: 0 0 60px rgba(201,168,76,0.3);
-    margin-bottom: 1rem;
-  }
+.clue.solved .card { border-color: rgba(79,200,120,.5); background: #242e27; }
+.clue.solved .card::before,
+.clue.solved .card::after { border-color: var(--green); }
+.clue.wrong .card { border-color: rgba(224,85,85,.45); }
 
-  .header-desc {
-    font-family: var(--serif);
-    font-style: italic;
-    font-size: 0.95rem;
-    color: rgba(245,240,232,0.6);
-    line-height: 1.8;
-  }
+/* solved / wrong stamp */
+.stamp-label {
+  position: absolute; top: 1rem; right: 1.4rem;
+  font-family: var(--stamp); font-size: .68rem; letter-spacing: .14em;
+  padding: 3px 10px; transform: rotate(-1.5deg);
+  opacity: 0; transition: opacity .4s; pointer-events: none; text-transform: uppercase;
+}
+.clue.solved .stamp-label { opacity: 1; color: var(--green); border: 1px solid rgba(79,200,120,.5); }
+.clue.wrong  .stamp-label { opacity: 1; color: var(--red);   border: 1px solid rgba(224,85,85,.45); }
 
-  /* ── CLUE CARDS ── */
-  .clue {
-    position: relative;
-    margin-bottom: 2rem;
-    animation: fadeUp 0.7s ease both;
-  }
-  .clue:nth-child(2) { animation-delay: 0.1s; }
-  .clue:nth-child(3) { animation-delay: 0.2s; }
-  .clue:nth-child(4) { animation-delay: 0.3s; }
+/* card header */
+.ch {
+  display: flex; align-items: flex-start; gap: 1.1rem;
+  padding-bottom: .9rem; border-bottom: 1px solid var(--border); margin-bottom: 1.3rem;
+}
+.badge {
+  width: 38px; height: 38px; border: 1px solid var(--border2); flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-size: 13px; color: var(--gold);
+  background: rgba(212,170,80,.08); transition: all .4s;
+}
+.clue.solved .badge { border-color: var(--green); color: var(--green); background: rgba(79,200,120,.12); }
+.clue.wrong  .badge { border-color: var(--red); color: var(--red); }
 
-  .clue-inner {
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    padding: 1.8rem 2rem;
-    position: relative;
-    transition: border-color 0.4s;
-  }
-  .clue-inner::before, .clue-inner::after {
-    content: ''; position: absolute;
-    width: 12px; height: 12px;
-    border-color: var(--gold); border-style: solid;
-  }
-  .clue-inner::before { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
-  .clue-inner::after  { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
+.ct-en { font-family: var(--stamp); font-size: 1.05rem; color: var(--white); letter-spacing: .05em; }
+.ct-jp { font-family: var(--serif); font-style: italic; font-size: .82rem; color: var(--off); margin-top: 2px; }
 
-  .clue.solved .clue-inner { border-color: rgba(45,90,61,0.6); }
-  .clue.solved .clue-inner::before,
-  .clue.solved .clue-inner::after { border-color: var(--green); }
+/* question block */
+.qb { margin-bottom: 1rem; }
+.qlabel {
+  font-family: var(--mono); font-size: 10px; letter-spacing: .2em;
+  color: var(--gold); text-transform: uppercase; margin-bottom: .45rem;
+}
 
-  .clue-header {
-    display: flex; align-items: flex-start; gap: 1.2rem;
-    margin-bottom: 1.4rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid var(--border);
-  }
+/* ★ 모든 설명 텍스트를 흰색 계열로 ★ */
+.qtext {
+  font-size: .97rem; font-style: italic;
+  color: var(--off);        /* 보조 (일본어) */
+  line-height: 1.8; margin-bottom: .65rem;
+}
+.qtext .en {
+  color: var(--white);      /* 영어는 완전 흰색 */
+  font-style: normal;
+}
+.qtext .note {
+  font-size: .85rem; color: rgba(255,255,255,.55);
+}
 
-  .clue-badge {
-    width: 40px; height: 40px;
-    border: 1px solid var(--border2);
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-    font-family: var(--mono);
-    font-size: 14px;
-    color: var(--gold);
-    background: rgba(201,168,76,0.05);
-    transition: all 0.4s;
-  }
-  .clue.solved .clue-badge {
-    background: rgba(45,90,61,0.2);
-    border-color: var(--green);
-    color: #5aad7a;
-  }
+/* answer row */
+.ar { display: flex; align-items: center; gap: .6rem; flex-wrap: wrap; }
+.suf { font-family: var(--mono); font-size: 12px; color: var(--off); white-space: nowrap; }
 
-  .clue-title-block {}
-  .clue-en {
-    font-family: var(--stamp);
-    font-size: 1.1rem;
-    color: var(--paper);
-    letter-spacing: 0.05em;
-  }
-  .clue-jp {
-    font-family: var(--serif);
-    font-style: italic;
-    font-size: 0.8rem;
-    color: rgba(245,240,232,0.4);
-    margin-top: 2px;
-  }
+input[type=text], input[type=number] {
+  background: rgba(0,0,0,.35);
+  border: none; border-bottom: 1px solid rgba(212,170,80,.45);
+  color: var(--white); font-family: var(--mono); font-size: 14px;
+  padding: 6px 6px; outline: none; transition: border-color .25s;
+  flex: 1; min-width: 110px;
+}
+input[type=number] { max-width: 76px; flex: none; }
+input::placeholder { color: rgba(255,255,255,.25); }
+input:focus { border-bottom-color: var(--gold2); }
 
-  /* ── QUESTION BLOCK ── */
-  .q-block { margin-bottom: 1.2rem; }
+/* check button */
+.check-btn {
+  margin-top: .9rem; padding: .45rem 1.3rem;
+  font-family: var(--mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase;
+  background: rgba(212,170,80,.1); cursor: pointer;
+  border: 1px solid rgba(212,170,80,.45); color: var(--gold2);
+  transition: all .25s;
+}
+.check-btn:hover { background: rgba(212,170,80,.2); border-color: var(--gold2); }
 
-  .q-label {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 0.2em;
-    color: var(--gold);
-    text-transform: uppercase;
-    margin-bottom: 0.5rem;
-  }
+/* feedback */
+.fb {
+  margin-top: .6rem; font-family: var(--mono); font-size: 12px;
+  min-height: 1.2em; letter-spacing: .06em;
+}
+.fb.ok  { color: var(--green); }
+.fb.err { color: var(--red); }
 
-  .q-text {
-    font-size: 0.88rem;
-    color: rgba(245,240,232,0.55);
-    font-style: italic;
-    line-height: 1.7;
-    margin-bottom: 0.7rem;
-  }
-  .q-text .en { color: rgba(245,240,232,0.75); }
+/* hint box */
+.hint {
+  display: none; margin-top: 1.2rem; padding: .9rem 1.1rem;
+  background: var(--card2); border-left: 3px solid rgba(212,170,80,.4);
+  animation: fadeIn .5s ease both;
+}
+.hint.show { display: block; }
+.hint-lbl { font-family: var(--mono); font-size: 10px; color: var(--gold2); letter-spacing: .15em; margin-bottom: .4rem; }
 
-  .ans-row {
-    display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;
-  }
+/* ── FINAL ── */
+.final { margin-top: 3rem; animation: fadeUp .8s .45s ease both; }
 
-  .ans-pre, .ans-suf {
-    font-family: var(--mono);
-    font-size: 13px;
-    color: rgba(245,240,232,0.4);
-    white-space: nowrap;
-  }
+.fcard {
+  background: var(--card); border: 1px solid rgba(212,170,80,.18);
+  padding: 2rem; position: relative; transition: border-color .5s, box-shadow .5s;
+}
+.fcard::before, .fcard::after {
+  content: ''; position: absolute; width: 16px; height: 16px;
+  border-style: solid; border-color: rgba(212,170,80,.35); transition: border-color .5s;
+}
+.fcard::before { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
+.fcard::after  { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
 
-  input[type="text"], input[type="number"], .editable {
-    background: rgba(0,0,0,0.4);
-    border: none;
-    border-bottom: 1px solid rgba(201,168,76,0.4);
-    color: var(--paper);
-    font-family: var(--mono);
-    font-size: 14px;
-    padding: 6px 2px;
-    outline: none;
-    transition: border-color 0.3s;
-    flex: 1;
-    min-width: 120px;
-  }
-  input[type="number"] { max-width: 80px; flex: none; }
-  input::placeholder { color: rgba(245,240,232,0.2); }
-  input:focus, .editable:focus { border-bottom-color: var(--gold); }
-  input.correct { border-bottom-color: #5aad7a !important; color: #5aad7a; }
+.final.unlocked .fcard { border-color: rgba(212,170,80,.55); box-shadow: 0 0 40px rgba(212,170,80,.08); }
+.final.unlocked .fcard::before,
+.final.unlocked .fcard::after { border-color: var(--gold); }
 
-  /* ── HINT BOX ── */
-  .hint-box {
-    display: none;
-    margin-top: 1.2rem;
-    padding: 1rem 1.2rem;
-    background: rgba(201,168,76,0.04);
-    border-left: 2px solid rgba(201,168,76,0.3);
-    animation: fadeIn 0.5s ease both;
-  }
-  .hint-box.show { display: block; }
-  .hint-icon {
-    font-family: var(--mono); font-size: 10px;
-    color: var(--gold); letter-spacing: 0.15em;
-    margin-bottom: 0.5rem;
-  }
+.fh {
+  display: flex; align-items: center; gap: 1rem;
+  padding-bottom: .9rem; border-bottom: 1px solid var(--border); margin-bottom: 1.5rem;
+}
+.lock { font-family: var(--mono); font-size: 22px; color: rgba(255,255,255,.25); transition: color .4s; line-height: 1; }
+.final.unlocked .lock { color: var(--gold); }
+.fh-title { font-family: var(--stamp); font-size: 1.25rem; color: var(--white); letter-spacing: .07em; }
+.fh-sub   { font-size: .8rem; font-style: italic; color: var(--off); margin-top: 2px; }
 
-  /* ── DIVIDER ── */
-  .divider {
-    border: none;
-    border-top: 1px solid var(--border);
-    margin: 1.2rem 0;
-  }
+/* summary */
+.summary { margin-bottom: 1.4rem; }
+.srow {
+  display: flex; align-items: baseline; gap: .8rem;
+  padding: 6px 0; border-bottom: 1px solid rgba(212,170,80,.08);
+  font-family: var(--mono); font-size: 12px;
+}
+.sk { color: var(--gold); min-width: 66px; }
+.sv { color: rgba(255,255,255,.35); transition: color .3s; }
+.sv.on { color: var(--white); }
 
-  /* ── FINAL CARD ── */
-  .final {
-    margin-top: 3rem;
-    position: relative;
-    animation: fadeUp 0.7s 0.4s ease both;
-  }
+/* logic box */
+.logic {
+  background: rgba(0,0,0,.4); border: 1px solid var(--border);
+  padding: 1.1rem 1.3rem; margin-bottom: 1.5rem;
+  font-size: .95rem; line-height: 2; color: var(--off);
+  transition: opacity .4s;
+}
+.logic.dim { opacity: .2; pointer-events: none; }
+.logic b { font-weight: normal; font-family: var(--mono); font-size: 11px; color: var(--white); }
+.logic .en { color: var(--white); }
+.arrow { color: var(--gold2); }
 
-  .final-inner {
-    background: var(--bg3);
-    border: 1px solid rgba(201,168,76,0.15);
-    padding: 2rem;
-    position: relative;
-    transition: border-color 0.5s;
-  }
-  .final-inner::before, .final-inner::after {
-    content: ''; position: absolute;
-    width: 16px; height: 16px;
-    border-color: rgba(201,168,76,0.3); border-style: solid;
-  }
-  .final-inner::before { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
-  .final-inner::after  { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
+.fsec { transition: opacity .5s; }
+.fsec.dim { opacity: .15; pointer-events: none; }
 
-  .final.unlocked .final-inner { border-color: rgba(201,168,76,0.5); }
+/* letter blanks */
+.blanks { display: flex; gap: 7px; margin: .9rem 0; flex-wrap: wrap; }
+.blank {
+  width: 44px; height: 52px; border: 1px solid rgba(212,170,80,.22);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-size: 22px; color: transparent;
+  background: rgba(0,0,0,.4); transition: all .25s;
+}
+.blank.lit { color: var(--gold2); border-color: var(--gold); background: rgba(212,170,80,.1); }
 
-  .final-title {
-    display: flex; align-items: center; gap: 1rem;
-    margin-bottom: 1.5rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid var(--border);
-  }
-  .lock-glyph {
-    font-family: var(--mono); font-size: 22px;
-    color: rgba(245,240,232,0.25);
-    transition: color 0.4s;
-    line-height: 1;
-  }
-  .final.unlocked .lock-glyph { color: var(--gold); }
+/* reveal button */
+.btn {
+  margin-top: 1.1rem; padding: .65rem 2.2rem;
+  font-family: var(--stamp); font-size: .95rem; letter-spacing: .1em; text-transform: uppercase;
+  background: transparent; border: 1px solid rgba(255,255,255,.15);
+  color: rgba(255,255,255,.2); cursor: not-allowed; transition: all .3s;
+}
+.btn.active {
+  border-color: var(--gold); color: var(--gold); cursor: pointer;
+  box-shadow: 0 0 24px rgba(212,170,80,.18);
+}
+.btn.active:hover { background: rgba(212,170,80,.12); }
 
-  .final-h {
-    font-family: var(--stamp);
-    font-size: 1.3rem;
-    color: var(--paper);
-    letter-spacing: 0.08em;
-  }
-  .final-sub {
-    font-size: 0.78rem;
-    font-style: italic;
-    color: rgba(245,240,232,0.35);
-    margin-top: 2px;
-  }
+/* result */
+.result-box { display: none; margin-top: 1.5rem; padding: 1.5rem 2rem; text-align: center; animation: fadeIn .6s ease both; }
+.result-box.show { display: block; }
+.result-box.ok { background: rgba(40,80,55,.3); border: 1px solid rgba(79,200,120,.35); }
+.result-box.ng { background: rgba(100,30,30,.25); border: 1px solid rgba(224,85,85,.35); }
+.res-title { font-family: var(--stamp); font-size: 1.6rem; letter-spacing: .1em; margin-bottom: .5rem; }
+.result-box.ok .res-title { color: var(--green); }
+.result-box.ng .res-title { color: var(--red); }
+.res-body { font-size: .95rem; font-style: italic; color: var(--off); }
 
-  /* ── SUMMARY ROWS ── */
-  .summary { margin-bottom: 1.5rem; }
-  .sum-row {
-    display: flex; align-items: baseline; gap: 1rem;
-    padding: 6px 0;
-    border-bottom: 1px solid rgba(201,168,76,0.08);
-    font-family: var(--mono); font-size: 13px;
-  }
-  .sum-key { color: var(--gold); min-width: 70px; }
-  .sum-val { color: rgba(245,240,232,0.5); }
-  .sum-val.filled { color: var(--paper); }
+@keyframes fadeDown { from { opacity:0; transform:translateY(-18px); } to { opacity:1; transform:none; } }
+@keyframes fadeUp   { from { opacity:0; transform:translateY(18px);  } to { opacity:1; transform:none; } }
+@keyframes fadeIn   { from { opacity:0; } to { opacity:1; } }
 
-  /* ── LOGIC BOX ── */
-  .logic {
-    background: rgba(0,0,0,0.3);
-    border: 1px solid var(--border);
-    padding: 1.2rem 1.4rem;
-    margin-bottom: 1.5rem;
-    font-size: 0.85rem;
-    line-height: 1.9;
-    color: rgba(245,240,232,0.5);
-    transition: opacity 0.4s;
-  }
-  .logic.dim { opacity: 0.3; pointer-events: none; }
-  .logic strong { color: var(--paper); font-weight: normal; font-family: var(--mono); font-size: 12px; letter-spacing: 0.1em; }
-  .logic .arrow { color: var(--gold); }
-
-  /* ── BLANK CELLS ── */
-  .blanks {
-    display: flex; gap: 8px; margin: 1rem 0;
-    flex-wrap: wrap;
-  }
-  .blank {
-    width: 44px; height: 52px;
-    border: 1px solid rgba(201,168,76,0.2);
-    display: flex; align-items: center; justify-content: center;
-    font-family: var(--mono); font-size: 20px; font-weight: bold;
-    color: transparent;
-    background: rgba(0,0,0,0.3);
-    transition: all 0.3s;
-    letter-spacing: 0;
-  }
-  .blank.lit { color: var(--gold); border-color: var(--gold); background: rgba(201,168,76,0.08); }
-
-  /* ── SUBMIT BUTTON ── */
-  .submit-btn {
-    margin-top: 1.2rem;
-    padding: 0.7rem 2.5rem;
-    font-family: var(--stamp);
-    font-size: 1rem;
-    letter-spacing: 0.1em;
-    background: transparent;
-    border: 1px solid rgba(201,168,76,0.2);
-    color: rgba(245,240,232,0.25);
-    cursor: not-allowed;
-    transition: all 0.3s;
-    text-transform: uppercase;
-  }
-  .submit-btn.active {
-    border-color: var(--gold);
-    color: var(--gold);
-    cursor: pointer;
-    box-shadow: 0 0 20px rgba(201,168,76,0.15);
-  }
-  .submit-btn.active:hover {
-    background: rgba(201,168,76,0.1);
-    box-shadow: 0 0 30px rgba(201,168,76,0.25);
-  }
-
-  /* ── RESULT ── */
-  .result-box {
-    display: none;
-    margin-top: 1.5rem;
-    padding: 1.5rem 2rem;
-    text-align: center;
-    animation: fadeIn 0.6s ease both;
-  }
-  .result-box.show { display: block; }
-  .result-box.correct-ans {
-    background: rgba(45,90,61,0.15);
-    border: 1px solid rgba(90,173,122,0.3);
-  }
-  .result-box.wrong-ans {
-    background: rgba(139,46,46,0.1);
-    border: 1px solid rgba(139,46,46,0.3);
-  }
-  .result-title {
-    font-family: var(--stamp);
-    font-size: 1.6rem;
-    letter-spacing: 0.1em;
-    margin-bottom: 0.5rem;
-  }
-  .result-box.correct-ans .result-title { color: #5aad7a; }
-  .result-box.wrong-ans .result-title { color: #c05050; }
-  .result-body { font-size: 0.9rem; font-style: italic; color: rgba(245,240,232,0.6); }
-
-  /* ── SOLVED STAMP ── */
-  .solved-stamp {
-    position: absolute;
-    top: 1rem; right: 1.5rem;
-    font-family: var(--stamp);
-    font-size: 0.75rem;
-    letter-spacing: 0.12em;
-    color: #5aad7a;
-    border: 1px solid rgba(90,173,122,0.4);
-    padding: 3px 10px;
-    transform: rotate(-2deg);
-    opacity: 0;
-    transition: opacity 0.4s;
-    pointer-events: none;
-    text-transform: uppercase;
-  }
-  .clue.solved .solved-stamp { opacity: 1; }
-
-  /* ── ANIMATIONS ── */
-  @keyframes fadeDown {
-    from { opacity: 0; transform: translateY(-20px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-  @keyframes fadeIn {
-    from { opacity: 0; } to { opacity: 1; }
-  }
-
-  /* ── RESPONSIVE ── */
-  @media (max-width: 600px) {
-    .page { padding: 2rem 1rem 4rem; }
-    .clue-inner { padding: 1.3rem 1.2rem; }
-    .final-inner { padding: 1.3rem 1.2rem; }
-  }
+@media (max-width:600px) {
+  .page { padding: 2rem 1rem 4rem; }
+  .card, .fcard { padding: 1.3rem 1.2rem; }
+}
 </style>
 </head>
 <body>
 <div class="page">
 
   <!-- HEADER -->
-  <div class="header">
-    <div class="header-rule">
-      <div class="mystery-num">🌿 Mystery 03</div>
-    </div>
+  <div class="hdr">
+    <div class="hdr-band"><div class="hdr-tag">🌿 Mystery 03</div></div>
     <h1>Campus Promenade</h1>
-    <p class="header-desc">
+    <p class="hdr-desc">
       このプロムナードは一本道。端から端まで歩いて、手がかりを集めよ！<br>
-      Walk from end to end and collect your clues!
+      <span class="en">Walk from end to end and collect your clues!</span>
     </p>
   </div>
 
   <!-- CLUE 1 -->
   <div class="clue" id="clue1">
-    <div class="clue-inner">
-      <div class="solved-stamp">Solved</div>
-      <div class="clue-header">
-        <div class="clue-badge" id="badge1">01</div>
-        <div class="clue-title-block">
-          <div class="clue-en">Find the Sign</div>
-          <div class="clue-jp">看板を探せ</div>
-        </div>
+    <div class="card">
+      <div class="stamp-label" id="stamp1">Solved</div>
+      <div class="ch">
+        <div class="badge" id="badge1">01</div>
+        <div><div class="ct-en">Find the Sign</div><div class="ct-jp">看板を探せ</div></div>
       </div>
-      <div class="q-block">
-        <div class="q-label">▸ Question</div>
-        <div class="q-text">
+      <div class="qb">
+        <div class="qlabel">▸ Question</div>
+        <div class="qtext">
           看板に書かれた、この場所の「主役の木」の英語名は？<br>
           <span class="en">What is the English name of the "star tree" of this promenade?</span>
         </div>
-        <div class="ans-row">
-          <input type="text" id="c1" placeholder="answer..." autocomplete="off" spellcheck="false">
-          <span class="ans-suf">tree</span>
+        <div class="ar">
+          <input type="text" id="c1" placeholder="type answer..." autocomplete="off" spellcheck="false">
+          <span class="suf">tree</span>
         </div>
+        <button class="check-btn" onclick="check1()">Check ▸</button>
+        <div class="fb" id="fb1"></div>
       </div>
     </div>
   </div>
 
   <!-- CLUE 2 -->
   <div class="clue" id="clue2">
-    <div class="clue-inner">
-      <div class="solved-stamp">Solved</div>
-      <div class="clue-header">
-        <div class="clue-badge" id="badge2">02</div>
-        <div class="clue-title-block">
-          <div class="clue-en">Use the QR Code</div>
-          <div class="clue-jp">QRコードを使え</div>
-        </div>
+    <div class="card">
+      <div class="stamp-label" id="stamp2">Solved</div>
+      <div class="ch">
+        <div class="badge" id="badge2">02</div>
+        <div><div class="ct-en">Use the QR Code</div><div class="ct-jp">QRコードを使え</div></div>
       </div>
-
-      <div class="q-block">
-        <div class="q-label">▸ Step 1</div>
-        <div class="q-text">
-          写真の場所へ行き、近くにある植物プレートのQRコードをスキャンせよ！<br>
-          <span class="en">Go to this location and scan the QR code on the plant nameplate.</span>
-        </div>
-        <div class="q-text" style="margin-top:0.4rem;">
-          この花は何色か？英語で答えよ。<br>
+      <div class="qb">
+        <div class="qlabel">▸ Step 1</div>
+        <div class="qtext">
+          写真の場所へ行き、植物プレートのQRコードをスキャンせよ！<br>
+          <span class="en">Go to the location and scan the QR code on the plant nameplate.</span><br>
           <span class="en">What color is this flower? Answer in English.</span>
         </div>
-        <div class="ans-row">
-          <input type="text" id="c2color" placeholder="color(s)..." autocomplete="off" spellcheck="false">
+        <div class="ar">
+          <input type="text" id="c2color" placeholder="color(s)..." autocomplete="off" spellcheck="false" oninput="revealHint2()">
         </div>
       </div>
-
-      <div class="hint-box" id="hint2">
-        <div class="hint-icon">▸ Hint</div>
-        <div class="q-text">
+      <div class="hint" id="hint2">
+        <div class="hint-lbl">▸ Next Step</div>
+        <div class="qtext">
           その2色は、空に現れるあるものの「両端の色」だ。それは何か？<br>
           <span class="en">These 2 colors are at both ends of something that appears in the sky. What is it?</span>
         </div>
-        <div class="ans-row">
-          <input type="text" id="c2ans" placeholder="answer..." autocomplete="off" spellcheck="false">
+        <div class="ar">
+          <input type="text" id="c2ans" placeholder="type answer..." autocomplete="off" spellcheck="false">
         </div>
+        <button class="check-btn" onclick="check2()">Check ▸</button>
+        <div class="fb" id="fb2"></div>
       </div>
     </div>
   </div>
 
   <!-- CLUE 3 -->
   <div class="clue" id="clue3">
-    <div class="clue-inner">
-      <div class="solved-stamp">Solved</div>
-      <div class="clue-header">
-        <div class="clue-badge" id="badge3">03</div>
-        <div class="clue-title-block">
-          <div class="clue-en">Find This Place</div>
-          <div class="clue-jp">写真の場所を探せ</div>
-        </div>
+    <div class="card">
+      <div class="stamp-label" id="stamp3">Solved</div>
+      <div class="ch">
+        <div class="badge" id="badge3">03</div>
+        <div><div class="ct-en">Find This Place</div><div class="ct-jp">写真の場所を探せ</div></div>
       </div>
-      <div class="q-block">
-        <div class="q-label">▸ Question</div>
-        <div class="q-text">
+      <div class="qb">
+        <div class="qlabel">▸ Question</div>
+        <div class="qtext">
           写真の木を探し、周りにある「夜に光るもの」を全部数えよ。<br>
-          <span class="en">Find the tree and count all the lights around it!</span>
+          <span class="en">Find the tree and count all the lights around it!</span><br>
+          <span class="note">チーム全員で一緒に数えること！ — Count together as a team!</span>
         </div>
-        <div class="q-text" style="font-size:0.8rem; color:rgba(245,240,232,0.3);">
-          チーム全員で一緒に数えること！ — Count together as a team!
-        </div>
-        <div class="ans-row" style="margin-top:0.8rem;">
+        <div class="ar">
           <input type="number" id="c3" placeholder="0" min="0" max="99">
-          <span class="ans-suf">lights</span>
+          <span class="suf">lights</span>
         </div>
+        <button class="check-btn" onclick="check3()">Check ▸</button>
+        <div class="fb" id="fb3"></div>
       </div>
     </div>
   </div>
 
   <!-- FINAL -->
   <div class="final" id="final">
-    <div class="final-inner">
-      <div class="final-title">
-        <div class="lock-glyph" id="lockGlyph">⚿</div>
+    <div class="fcard">
+      <div class="fh">
+        <div class="lock" id="lockIcon">⚿</div>
         <div>
-          <div class="final-h">Final Mystery</div>
-          <div class="final-sub">最終謎 — 3つの答えが揃ったら解錠される</div>
+          <div class="fh-title">Final Mystery</div>
+          <div class="fh-sub">最終謎 — 3つの答えが揃ったら解錠される</div>
         </div>
       </div>
 
       <div class="summary">
-        <div class="sum-row">
-          <span class="sum-key">Clue 1</span>
-          <span class="sum-val" id="s1">———</span>
-        </div>
-        <div class="sum-row">
-          <span class="sum-key">Clue 2</span>
-          <span class="sum-val" id="s2">———</span>
-        </div>
-        <div class="sum-row">
-          <span class="sum-key">Clue 3</span>
-          <span class="sum-val" id="s3">———</span>
-        </div>
+        <div class="srow"><span class="sk">Clue 1</span><span class="sv" id="s1">———</span></div>
+        <div class="srow"><span class="sk">Clue 2</span><span class="sv" id="s2">———</span></div>
+        <div class="srow"><span class="sk">Clue 3</span><span class="sv" id="s3">———</span></div>
       </div>
 
       <div class="logic dim" id="logic">
-        <strong>CLUE 2</strong>で見つけたものを作り出すのは何か？<br>
-        What creates the thing you found in Clue 2?<br><br>
-        <strong>CLUE 1</strong>の木の名前と、その答えの最初の5文字を比べよ。<br>
-        Compare the tree name with the first 5 letters of your answer.<br><br>
-        <span class="arrow">▸</span> RAINBOW <span class="arrow">+</span> ? <span class="arrow">→</span>
-        何が光を7色に分けているのか？ What splits light into 7 colors?
+        <b>CLUE 2</b> で見つけたものを作り出すのは何か？<br>
+        <span class="en">What creates the thing you found in Clue 2?</span><br><br>
+        <b>CLUE 1</b> の木の名前と、その答えの最初の5文字を比べよ。<br>
+        <span class="en">Compare the tree name with the first 5 letters of your answer.</span><br><br>
+        <span class="arrow">▸</span> RAINBOW <span class="arrow">+</span> ?
+        <span class="arrow">→</span> 何が光を7色に分けているのか？
+        <span class="en">What splits light into 7 colors?</span>
       </div>
 
-      <div id="finalSection" style="opacity:0.25; transition:opacity 0.5s; pointer-events:none;">
-        <div class="q-label">▸ Final Answer</div>
-        <div class="q-text" style="margin-top:0.4rem;">
+      <div class="fsec dim" id="fsec">
+        <div class="qlabel">▸ Final Answer</div>
+        <div class="qtext" style="margin-top:.4rem;">
           何が光を7色に分けているのか？英語5文字で答えよ。<br>
           <span class="en">What splits light into 7 colors? (5 letters)</span>
         </div>
         <div class="blanks">
-          <div class="blank" id="b0"></div>
-          <div class="blank" id="b1"></div>
-          <div class="blank" id="b2"></div>
-          <div class="blank" id="b3"></div>
+          <div class="blank" id="b0"></div><div class="blank" id="b1"></div>
+          <div class="blank" id="b2"></div><div class="blank" id="b3"></div>
           <div class="blank" id="b4"></div>
         </div>
-        <div class="ans-row">
+        <div class="ar">
           <input type="text" id="finalInput" placeholder="_ _ _ _ _" maxlength="10"
             autocomplete="off" spellcheck="false" disabled
-            style="max-width:180px; font-size:16px; letter-spacing:0.25em; text-align:center;">
+            style="max-width:180px;font-size:16px;letter-spacing:.25em;text-align:center;"
+            oninput="updateBlanks()">
         </div>
-        <button class="submit-btn" id="submitBtn" disabled>Reveal Answer</button>
+        <button class="btn" id="submitBtn" disabled onclick="submitFinal()">Reveal Answer</button>
       </div>
 
       <div class="result-box" id="resultBox"></div>
@@ -603,100 +432,120 @@
 
 </div>
 <script>
-const FINAL = "PRISM";
+// ── 정답 설정 ──────────────────────
+const ANS1      = "tulip";
+const ANS2      = "rainbow";
+const ANS3      = "4";
+const ANS_FINAL = "PRISM";
+// ────────────────────────────────────
 
 const $ = id => document.getElementById(id);
+let solved = { c1:false, c2:false, c3:false };
 
-function norm(s){ return s.trim().toUpperCase(); }
+const norm = s => s.trim().toLowerCase();
 
-function setVal(id, text, filled){
+function setFb(id, msg, ok){
   const el = $(id);
-  el.textContent = text;
-  el.className = 'sum-val' + (filled ? ' filled' : '');
+  el.textContent = msg;
+  el.className = 'fb ' + (ok ? 'ok' : 'err');
 }
 
-function updateC1(){
-  const v = $('c1').value.trim();
-  $('s1').textContent = v ? v + ' tree' : '———';
-  $('s1').className = 'sum-val' + (v ? ' filled' : '');
-  if(v){ $('clue1').classList.add('solved'); $('badge1').textContent = '✓'; }
-  else { $('clue1').classList.remove('solved'); $('badge1').textContent = '01'; }
-  checkFinal();
+function markClue(num, ok){
+  const clue = $('clue'+num), badge = $('badge'+num), stamp = $('stamp'+num);
+  clue.classList.remove('solved','wrong');
+  if(ok){
+    clue.classList.add('solved');
+    badge.textContent = '✓';
+    stamp.textContent = 'Solved';
+    solved['c'+num] = true;
+  } else {
+    clue.classList.add('wrong');
+    badge.textContent = '0'+num;
+    stamp.textContent = 'Wrong';
+    solved['c'+num] = false;
+  }
+  updateSummary();
+  checkFinalUnlock();
 }
 
-function updateC2color(){
-  const v = $('c2color').value.trim();
-  if(v.length >= 2) $('hint2').classList.add('show');
-  checkFinal();
+function check1(){
+  const v = norm($('c1').value);
+  if(!v){ setFb('fb1','答えを入力してください / Please enter an answer.', false); return; }
+  if(v === norm(ANS1)){ setFb('fb1','✓ 正解！ Correct!', true); markClue(1,true); }
+  else                { setFb('fb1','✗ 違います。 / Try again.', false); markClue(1,false); }
 }
 
-function updateC2ans(){
-  const v = $('c2ans').value.trim();
-  $('s2').textContent = v || '———';
-  $('s2').className = 'sum-val' + (v ? ' filled' : '');
-  if(v){ $('clue2').classList.add('solved'); $('badge2').textContent = '✓'; }
-  else { $('clue2').classList.remove('solved'); $('badge2').textContent = '02'; }
-  checkFinal();
+function revealHint2(){
+  if($('c2color').value.trim().length >= 2) $('hint2').classList.add('show');
 }
 
-function updateC3(){
+function check2(){
+  const v = norm($('c2ans').value);
+  if(!v){ setFb('fb2','答えを入力してください / Please enter an answer.', false); return; }
+  if(v === norm(ANS2)){ setFb('fb2','✓ 正解！ Correct!', true); markClue(2,true); }
+  else                { setFb('fb2','✗ 違います。 / Try again.', false); markClue(2,false); }
+}
+
+function check3(){
   const v = $('c3').value.trim();
-  $('s3').textContent = v !== '' ? v + ' lights' : '———';
-  $('s3').className = 'sum-val' + (v !== '' ? ' filled' : '');
-  if(v !== ''){ $('clue3').classList.add('solved'); $('badge3').textContent = '✓'; }
-  else { $('clue3').classList.remove('solved'); $('badge3').textContent = '03'; }
-  checkFinal();
+  if(v === ''){ setFb('fb3','数字を入力してください / Please enter a number.', false); return; }
+  if(v === ANS3){ setFb('fb3','✓ 正解！ Correct!', true); markClue(3,true); }
+  else          { setFb('fb3','✗ 違います。 / Try again.', false); markClue(3,false); }
 }
 
-function checkFinal(){
-  const c1 = $('c1').value.trim();
-  const c2 = $('c2ans').value.trim();
-  const c3 = $('c3').value.trim();
-  const all = c1 && c2 && c3 !== '';
+function updateSummary(){
+  [['s1', solved.c1, $('c1').value.trim()+' tree'],
+   ['s2', solved.c2, $('c2ans').value.trim()],
+   ['s3', solved.c3, $('c3').value.trim()+' lights']
+  ].forEach(([id, ok, val]) => {
+    const el = $(id);
+    el.textContent = ok ? val : '———';
+    el.className = 'sv' + (ok ? ' on' : '');
+  });
+}
 
+function checkFinalUnlock(){
+  const all = solved.c1 && solved.c2 && solved.c3;
   $('logic').classList.toggle('dim', !all);
-  const fs = $('finalSection');
-  fs.style.opacity = all ? '1' : '0.25';
-  fs.style.pointerEvents = all ? 'auto' : 'none';
+  $('fsec').classList.toggle('dim', !all);
   $('finalInput').disabled = !all;
   $('final').classList.toggle('unlocked', all);
-  $('lockGlyph').textContent = all ? '⚷' : '⚿';
-  if(!all){ $('submitBtn').disabled = true; $('submitBtn').classList.remove('active'); }
+  $('lockIcon').textContent = all ? '⚷' : '⚿';
+  if(!all){ $('submitBtn').disabled=true; $('submitBtn').classList.remove('active'); }
 }
 
 function updateBlanks(){
   const v = $('finalInput').value.toUpperCase();
   for(let i=0;i<5;i++){
     const b = $('b'+i);
-    b.textContent = v[i] || '';
+    b.textContent = v[i]||'';
     b.classList.toggle('lit', !!v[i]);
   }
-  const ready = v.length === 5;
+  const ready = v.length >= 1;
   $('submitBtn').disabled = !ready;
   $('submitBtn').classList.toggle('active', ready);
 }
 
-function submit(){
-  const v = norm($('finalInput').value);
+function submitFinal(){
+  const v = $('finalInput').value.trim().toUpperCase();
   const rb = $('resultBox');
   rb.className = 'result-box show';
-  if(v === FINAL){
-    rb.classList.add('correct-ans');
-    rb.innerHTML = `<div class="result-title">正解！ / Correct!</div>
-      <div class="result-body">その名を持つ建物へ向かえ！<br>Head to the building with that name!</div>`;
+  if(v === ANS_FINAL){
+    rb.classList.add('ok');
+    rb.innerHTML = '<div class="res-title">正解！ / Correct!</div><div class="res-body">その名を持つ建物へ向かえ！<br>Head to the building with that name!</div>';
   } else {
-    rb.classList.add('wrong-ans');
-    rb.innerHTML = `<div class="result-title">違う… / Not Quite</div>
-      <div class="result-body">もう一度考えてみよう。Try again!</div>`;
+    rb.classList.add('ng');
+    rb.innerHTML = '<div class="res-title">違う… / Not Quite</div><div class="res-body">もう一度考えてみよう。 / Try again!</div>';
   }
 }
 
-$('c1').addEventListener('input', updateC1);
-$('c2color').addEventListener('input', updateC2color);
-$('c2ans').addEventListener('input', updateC2ans);
-$('c3').addEventListener('input', updateC3);
-$('finalInput').addEventListener('input', updateBlanks);
-$('submitBtn').addEventListener('click', submit);
+document.addEventListener('keydown', e => {
+  if(e.key !== 'Enter') return;
+  const id = document.activeElement?.id;
+  if(id==='c1') check1();
+  else if(id==='c2ans') check2();
+  else if(id==='c3') check3();
+});
 </script>
 </body>
 </html>
